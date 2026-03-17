@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dragala Yuukiko — Priestess of Starry Sorrows</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --indigo: #0e0e1f;
+      --navy: #13132b;
+      --deep: #1a1a38;
+      --gold: #c9a84c;
+      --gold-light: #e2c97e;
+      --silver: #b8c4d4;
+      --ivory: #f0ece0;
+      --muted: #7a7a99;
+      --card-bg: rgba(255,255,255,0.03);
+      --border: rgba(201,168,76,0.2);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--indigo);
+      color: var(--ivory);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── STARFIELD ── */
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--d) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.1; transform: scale(1); }
+      to   { opacity: 0.9; transform: scale(1.4); }
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 3rem;
+      background: linear-gradient(to bottom, rgba(14,14,31,0.95), transparent);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+    }
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--silver);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold-light); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      flex-direction: column;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(30,25,70,0.9) 0%, var(--indigo) 70%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 300;
+      line-height: 1.0;
+      color: var(--ivory);
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-style: italic;
+      color: var(--silver);
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.6s forwards;
+    }
+
+    .halo-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.7s forwards;
+    }
+    .halo-divider::before,
+    .halo-divider::after {
+      content: '';
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+    .halo-divider::after {
+      background: linear-gradient(to left, transparent, var(--gold));
+    }
+    .halo-icon {
+      font-size: 1.2rem;
+      color: var(--gold);
+    }
+
+    .hero-desc {
+      max-width: 480px;
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--silver);
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.8s forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s 1s forwards;
+    }
+
+    .btn {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.9rem 2.2rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: translateY(100%);
+      transition: transform 0.3s;
+      z-index: -1;
+    }
+    .btn:hover { color: var(--indigo); }
+    .btn:hover::before { transform: translateY(0); }
+
+    .btn-ghost {
+      border-color: rgba(184,196,212,0.3);
+      color: var(--silver);
+    }
+    .btn-ghost::before { background: rgba(184,196,212,0.1); }
+    .btn-ghost:hover { color: var(--ivory); }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 6rem 2rem;
+      background: linear-gradient(to bottom, var(--indigo), var(--navy));
+    }
+    .about-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    @media(max-width:700px){ .about-inner { grid-template-columns:1fr; gap:3rem; } }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 60px;
+    }
+
+    .about-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--ivory);
+      margin-bottom: 1.5rem;
+    }
+    .about-heading em { color: var(--gold-light); font-style: italic; }
+
+    .about-text {
+      font-size: 0.9rem;
+      line-height: 1.95;
+      color: var(--silver);
+      margin-bottom: 1rem;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-top: 2rem;
+    }
+    .tool-chip {
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.9rem;
+      font-size: 0.75rem;
+      color: var(--silver);
+      letter-spacing: 0.05em;
+      background: var(--card-bg);
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .tool-chip:hover { border-color: var(--gold); color: var(--gold-light); }
+    .tool-chip span { color: var(--gold); font-size: 0.65rem; display: block; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.2rem; }
+
+    .about-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .stat-card {
+      border: 1px solid var(--border);
+      padding: 1.8rem;
+      background: var(--card-bg);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--gold);
+      transform: scaleY(0);
+      transition: transform 0.4s;
+      transform-origin: bottom;
+    }
+    .stat-card:hover { border-color: rgba(201,168,76,0.4); }
+    .stat-card:hover::before { transform: scaleY(1); }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--gold-light);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── GALLERY ── */
+    #gallery {
+      padding: 6rem 2rem;
+      background: var(--navy);
+      display: block;
+    }
+    .gallery-inner { max-width: 1100px; margin: 0 auto; }
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .gallery-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      color: var(--ivory);
+      margin-bottom: 0.8rem;
+    }
+    .gallery-title em { color: var(--gold-light); font-style: italic; }
+    .gallery-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 1.5rem;
+    }
+    @media(max-width:700px){ .gallery-grid { grid-template-columns: 1fr 1fr; } }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--deep);
+      aspect-ratio: 3/4;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: var(--deep);
+    }
+    .gallery-item:first-child {
+      grid-column: span 2;
+      aspect-ratio: 4/3;
+    }
+    .gallery-item:first-child img {
+      object-fit: contain;
+    }
+    .gallery-item:hover { border-color: var(--gold); }
+
+    .gallery-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .gallery-placeholder-icon { font-size: 2rem; opacity: 0.4; }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(14,14,31,0.95) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 1.2rem;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-info-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--ivory);
+      display: block;
+    }
+    .gallery-info-tag {
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* fake art previews */
+    .art-1 { background: linear-gradient(135deg, #1a1040 0%, #2d1b5e 40%, #0e1830 100%); }
+    .art-2 { background: linear-gradient(135deg, #0d1f3c 0%, #1e3a5f 50%, #2d1040 100%); }
+    .art-3 { background: linear-gradient(160deg, #1f0a2e 0%, #3d1060 50%, #0e1020 100%); }
+    .art-4 { background: linear-gradient(135deg, #0a1a2e 0%, #1a3050 50%, #2a0e3e 100%); }
+    .art-5 { background: linear-gradient(135deg, #1a0e30 0%, #0e2040 50%, #301a50 100%); }
+
+    .art-shimmer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 40% 30%, rgba(201,168,76,0.15) 0%, transparent 60%);
+    }
+
+    /* ── LINKS ── */
+    #links {
+      padding: 6rem 2rem;
+      background: linear-gradient(to bottom, var(--navy), var(--deep));
+      display: block;
+    }
+    .links-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .links-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      color: var(--ivory);
+      margin-bottom: 0.8rem;
+    }
+    .links-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 3.5rem;
+    }
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media(max-width:500px){ .links-grid { grid-template-columns: 1fr; } }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.3rem 1.5rem;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      text-decoration: none;
+      color: var(--silver);
+      transition: all 0.3s;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .link-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .link-card:hover { border-color: rgba(201,168,76,0.5); color: var(--ivory); transform: translateY(-2px); }
+    .link-card:hover::before { opacity: 1; }
+
+    .link-icon {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      background: rgba(201,168,76,0.05);
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .link-card:hover .link-icon {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.12);
+    }
+    .link-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: inherit;
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+    .link-handle {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+    .link-arrow {
+      margin-left: auto;
+      color: var(--gold);
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      font-size: 0.8rem;
+    }
+    .link-card:hover .link-arrow { opacity: 1; transform: translateX(3px); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 2;
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--indigo);
+    }
+    .footer-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+    .footer-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .footer-heart { color: var(--gold); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--indigo); }
+    ::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.6); }
+  </style>
+</head>
+<body>
+
+  <!-- Starfield -->
+  <div id="stars"></div>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">Dragala Yuukiko</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#links">Links</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <p class="hero-eyebrow">✦ Fallen Angel of Laterano ✦</p>
+    <h1 class="hero-title">Dragala<br><em>Yuukiko</em></h1>
+    <p class="hero-subtitle">Priestess of Starry Sorrows</p>
+    <div class="halo-divider"><span class="halo-icon">⊕</span></div>
+    <p class="hero-desc">
+      Digital artist & VTuber crafting anime and chibi character art from the shadows of a darkened sanctuary.
+    </p>
+    <div class="hero-cta">
+      <a href="#gallery" class="btn">View My Work</a>
+
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="reveal">
+        <p class="section-label">About</p>
+        <div style="margin-bottom:1.8rem;">
+          <img src="pfp.png" alt="Dragala Yuukiko" style="
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 20px rgba(201,168,76,0.25);
+            display: block;
+          " />
+        </div>
+        <h2 class="about-heading">Art born from<br><em>celestial darkness</em></h2>
+        <p class="about-text">
+          I'm Yuukiko — a freelance digital artist and fallen angel from Laterano, accompanied by my little dragon Sakura. I specialize in anime and chibi style character art with a signature flat coloring and rendering style.
+        </p>
+        <p class="about-text">
+          From expressive commission pieces to original character lore, every artwork I create carries a piece of the stars. Available for character art, chibi portraits, and more.
+        </p>
+        <div class="tools-grid">
+          <div class="tool-chip"><span>Tablet</span>XP-Pen 13.3 Pro</div>
+          <div class="tool-chip"><span>Primary</span>MediBang Paint</div>
+          <div class="tool-chip"><span>Secondary</span>OpenCanvas 7</div>
+          <div class="tool-chip"><span>Style</span>Anime · Chibi</div>
+        </div>
+      </div>
+      <div class="about-stats reveal">
+        <div class="stat-card">
+          <div class="stat-num">✦</div>
+          <div class="stat-label">Anime & Chibi Specialist</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">Unvale</div>
+          <div class="stat-label">Character Platform</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">Live</div>
+          <div class="stat-label">Streaming on Twitch</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Stories waiting to be drawn</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery">
+    <div class="gallery-inner">
+      <div class="gallery-header reveal">
+        <p class="section-label" style="justify-content:center;">✦ My Work</p>
+        <h2 class="gallery-title">Scenes from the<br><em>Darkened Sanctuary</em></h2>
+
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item art-1 art-shimmer reveal">
+          <img src="Art1.png" style="width:100%;height:100%;object-fit:contain;" />
+          <div class="gallery-overlay">
+            <div>
+              <span class="gallery-info-title">Featured Work</span>
+              <span class="gallery-info-tag">Character Art</span>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-item art-2 reveal">
+          <img src="Art2.png" style="width:100%;height:100%;object-fit:contain;" />
+          <div class="gallery-overlay">
+            <div>
+              <span class="gallery-info-title">Chibi Portrait</span>
+              <span class="gallery-info-tag">Chibi Style</span>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-item art-3 reveal">
+          <img src="Art3.png" style="width:100%;height:100%;object-fit:contain;" />
+          <div class="gallery-overlay">
+            <div>
+              <span class="gallery-info-title">Original Character</span>
+              <span class="gallery-info-tag">OC · Anime</span>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-item art-4 reveal">
+          <img src="Art4.png" style="width:100%;height:100%;object-fit:contain;" />
+          <div class="gallery-overlay">
+            <div>
+              <span class="gallery-info-title">Commission Work</span>
+              <span class="gallery-info-tag">Character Art</span>
+            </div>
+          </div>
+        </div>
+        <a href="https://www.instagram.com/snowysorrows/" target="_blank" class="gallery-item art-5 reveal" style="text-decoration:none;">
+          <img src="Art5.png" style="width:100%;height:100%;object-fit:contain;" />
+          <div class="gallery-overlay">
+            <div>
+              <span class="gallery-info-title">More Work</span>
+              <span class="gallery-info-tag">See Full Gallery →</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Links -->
+  <section id="links">
+    <div class="links-inner">
+      <div class="reveal">
+        <p class="section-label" style="justify-content:center;">✦ Find Me</p>
+        <h2 class="links-title">Connect with<br>the Sanctuary</h2>
+        <p class="links-sub">Streams, art, and updates — all in one place</p>
+      </div>
+      <div class="links-grid reveal">
+        <a href="https://twitch.tv/Dragala_Yuukiko" target="_blank" class="link-card">
+          <div class="link-icon">🎮</div>
+          <div>
+            <span class="link-name">Twitch</span>
+            <span class="link-handle">@Dragala_Yuukiko</span>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+        <a href="https://bsky.app/profile/snowysorrows.bsky.social" target="_blank" class="link-card">
+          <div class="link-icon">🌙</div>
+          <div>
+            <span class="link-name">Bluesky</span>
+            <span class="link-handle">Art & Updates</span>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+        <a href="https://www.instagram.com/snowysorrows/" target="_blank" class="link-card">
+          <div class="link-icon">📸</div>
+          <div>
+            <span class="link-name">Instagram</span>
+            <span class="link-handle">Portfolio Feed</span>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+        <a href="https://artfight.net/~Dragala_Yuukiko" target="_blank" class="link-card">
+          <div class="link-icon">⚔️</div>
+          <div>
+            <span class="link-name">Artfight</span>
+            <span class="link-handle">~Dragala_Yuukiko</span>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">Dragala Yuukiko</div>
+    <p class="footer-sub">Priestess of Starry Sorrows · Made with <span class="footer-heart">♥</span> & starlight</p>
+  </footer>
+
+  <script>
+    // Generate stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 180; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.2 + 0.4;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%; left:${Math.random()*100}%;
+        --d:${(Math.random()*4+2).toFixed(1)}s;
+        animation-delay:${(Math.random()*4).toFixed(1)}s;
+        opacity:${Math.random()*0.5+0.1};
+      `;
+      starsEl.appendChild(s);
+    }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
